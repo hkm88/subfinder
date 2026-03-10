@@ -61,8 +61,8 @@ func TestResolveSourceRateLimit_NoLimit(t *testing.T) {
 	assert.Equal(t, uint(0), rl)
 }
 
-func TestResolveSourceRateLimit_NilRateLimit(t *testing.T) {
-	// nil CustomRateLimit should not panic
+func TestResolveSourceRateLimit_ZeroValueRateLimit(t *testing.T) {
+	// Zero-value CustomRateLimit (nil maps) should not panic and fall back to global
 	rl, dur := resolveSourceRateLimit(5, &subscraping.CustomRateLimit{}, "crtsh")
 	assert.Equal(t, uint(5), rl)
 	assert.Equal(t, time.Second, dur)
