@@ -2,7 +2,6 @@ package passive
 
 import (
 	"context"
-	"math"
 	"testing"
 	"time"
 
@@ -120,6 +119,4 @@ func TestBuildMultiRateLimiter_UnlimitedWhenNoLimits(t *testing.T) {
 	limiter, err := agent.buildMultiRateLimiter(context.Background(), 0, crl)
 	require.NoError(t, err)
 	require.NotNil(t, limiter)
-	// No assertion on internal state - just verify it doesn't error
-	_ = math.MaxUint32 // referenced for clarity
 }
