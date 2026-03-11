@@ -120,3 +120,28 @@ func TestBuildMultiRateLimiter_UnlimitedWhenNoLimits(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, limiter)
 }
+
+func TestResolveSourceRateLimit_PerSourceExceedsGlobal(t *testing.T) {
+	// Per-source limit higher than global should be honoured
+	// (the source was explicitly allowed more than the default)
+	crl := newCustomRateLimit(
+		map[string]uint{"hackertarget": 20},
+		nil,
+	)
+
+	rl, dur := resolveSourceRateLimit(10, crl, "hackertarget")
+	assert.Equal(t, uint(20), rl, "per-source limit should take precedence even when > global")
+	assert.Equal(t, time.Second, dur)
+}
+
+func TestResolveSourceRateLimit_CaseInsensitive(t *testing.T) {
+	// Source names should be case-insensitive for lookup
+	crl := newCustomRateLimit(
+		map[string]uint{"hackertarget": 5},
+		nil,
+	)
+
+	// Try mixed case — should still match the lower-cased key
+	rl, _ := resolveSourceRateLimit(0, crl, "HackerTarget")
+	assert.Equal(t, uint(5), rl, "source name lookup should be case-insensitive")
+}
