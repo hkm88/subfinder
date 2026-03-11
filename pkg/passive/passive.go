@@ -11,6 +11,7 @@ import (
 
 	"github.com/projectdiscovery/ratelimit"
 	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
+	mapsutil "github.com/projectdiscovery/utils/maps"
 )
 
 type EnumerationOptions struct {
@@ -86,7 +87,14 @@ func (a *Agent) buildMultiRateLimiter(ctx context.Context, globalRateLimit int, 
 	var multiRateLimiter *ratelimit.MultiLimiter
 	var err error
 	if rateLimit == nil {
-		rateLimit = &subscraping.CustomRateLimit{}
+		rateLimit = &subscraping.CustomRateLimit{
+			Custom: mapsutil.SyncLockMap[string, uint]{
+				Map: make(map[string]uint),
+			},
+			CustomDuration: mapsutil.SyncLockMap[string, time.Duration]{
+				Map: make(map[string]time.Duration),
+			},
+		}
 	}
 	for _, source := range a.sources {
 		rl, duration := resolveSourceRateLimit(globalRateLimit, rateLimit, source.Name())
