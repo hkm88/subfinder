@@ -15,16 +15,12 @@ jobs:
         with: 
           fetch-depth: 0
 
-      - name: "Set up Go"
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
+      - uses: projectdiscovery/actions/setup/go@v1
 
       - name: "Create release on GitHub"
-        uses: goreleaser/goreleaser-action@v3
+        uses: projectdiscovery/actions/goreleaser@v1
         with:
-          args: "release --clean"
-          version: latest
+          release: true
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           SLACK_WEBHOOK: "${{ secrets.RELEASE_SLACK_WEBHOOK }}"

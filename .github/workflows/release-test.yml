@@ -16,13 +16,7 @@ jobs:
         with: 
           fetch-depth: 0
 
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
-      
+      - uses: projectdiscovery/actions/setup/go@v1
+
       - name: release test
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          args: "release --clean --snapshot"
-          version: latest
+        uses: projectdiscovery/actions/goreleaser@v1
